@@ -211,6 +211,8 @@ def load_ndarray_file(nd_bytes):
         return {keys[i] : arrs[i] for i in range(len(keys))}
 
 def change_image_to_rgb(np_image, idx, batch):
+    assert(np_image.dtype == np.uint8)
+    assert(batch.dtype == np.float32)
     assert(len(np_image.shape) == 3)
     assert(len(batch.shape) == 4)
     assert(np_image.shape[0] == batch.shape[2])
