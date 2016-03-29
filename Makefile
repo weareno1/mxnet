@@ -60,8 +60,8 @@ ifeq ($(USE_OPENMP), 1)
 endif
 
 ifeq ($(USE_CUDNN), 1)
-	CFLAGS += -DMSHADOW_USE_CUDNN=1
-	LDFLAGS += -lcudnn
+	CFLAGS += -DMSHADOW_USE_CUDNN=1 -I$(USE_CUDNN_PATH)
+	LDFLAGS += -lcudnn -L$(USE_CUDNN_PATH)
 endif
 
 ifeq ($(USE_THREADED_ENGINE), 1)

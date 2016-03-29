@@ -209,3 +209,20 @@ def load_ndarray_file(nd_bytes):
         return arrs
     else:
         return {keys[i] : arrs[i] for i in range(len(keys))}
+
+def change_image_to_rgb(np_image, idx, batch):
+    assert(len(np_image.shape) == 3)
+    assert(len(batch.shape) == 4)
+    assert(np_image.shape[0] == batch.shape[2])
+    assert(np_image.shape[1] == batch.shape[3])
+    assert(np_image.shape[2] == batch.shape[1])
+    batch_size = batch.shape[0]
+    assert(0 <= idx and idx < batch_size)
+    _check_call(_LIB.MXCVImageToRGB(\
+            np_image.ctypes.data_as(ctypes.c_void_p),\
+            ctypes.c_size_t(batch_size),\
+            ctypes.c_size_t(np_image.shape[0]),\
+            ctypes.c_size_t(np_image.shape[1]),\
+            ctypes.c_size_t(np_image.shape[2]),\
+            ctypes.c_size_t(idx),\
+            batch.ctypes.data_as(ctypes.c_void_p)))

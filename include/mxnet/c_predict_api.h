@@ -204,4 +204,11 @@ MXNET_DLL int MXNDListGet(NDListHandle handle,
  */
 MXNET_DLL int MXNDListFree(NDListHandle handle);
 
+MXNET_DLL int MXCVImageToRGB(uint8_t *in_batch,
+		                        size_t batch_size,
+                                size_t img_width,
+                                size_t img_height,
+                                size_t img_channel,
+                                size_t idx,
+                                mx_float *out_batch);
 #endif  // MXNET_C_PREDICT_API_H_

@@ -303,3 +303,32 @@ int MXNDListFree(NDListHandle handle) {
   delete static_cast<MXAPINDList*>(handle);
   API_END();
 }
+int MXCVImageToRGB(
+		uint8_t *in_batch,
+		size_t batch_size,
+		size_t img_width,
+		size_t img_height,
+		size_t img_channel,
+		size_t idx,
+		mx_float *out_batch) {
+  API_BEGIN();
+  CHECK_EQ(img_channel, 3);
+  size_t h_len = img_channel;
+  size_t w_len = h_len * img_height;
+
+  size_t batch_dim[4] = {batch_size, img_channel, img_width, img_height};
+  size_t out_w_len = batch_dim[3];
+  size_t out_c_len = out_w_len * batch_dim[2];
+  size_t out_n_len = out_c_len * batch_dim[1];
+
+  //bgr to rgb
+  for (size_t w = 0; w < img_width; w++)
+    for (size_t h = 0; h < img_height; h++)
+	  for (size_t c = 0; c < img_channel; c++) {
+		size_t in_index = w * w_len + h * h_len + c;
+		size_t out_index = idx * out_n_len + (2 - c) * out_c_len + w * out_w_len + h;
+		out_batch[out_index] = in_batch[in_index];
+	  }
+  API_END();
+}
+
