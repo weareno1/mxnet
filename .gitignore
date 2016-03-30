@@ -34,7 +34,7 @@ doc/latex
 doc/doc
 
 #dmlc
-config.mk
+#config.mk
 
 *.pyc
 .Rhistory
