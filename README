@@ -1,0 +1,2 @@
+git clone --recursive https://github.com/weareno1/mxnet
+make DEBUG=1 VERBOSE=1
