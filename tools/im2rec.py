@@ -73,7 +73,7 @@ def write_record(args, image_list):
                     0: cv2.IMREAD_GRAYSCALE,
                     1: cv2.IMREAD_COLOR}
     total = len(source)
-    
+
     def image_encode(item, q_out):
         try:
             img = cv2.imread(os.path.join(args.root, item[1]), color_modes[args.color])
@@ -203,9 +203,9 @@ def main():
         -1:Loads image as such including alpha channel.')
     rgroup.add_argument('--encoding', type=str, default='.jpg', choices=['.jpg', '.png'],
         help='specify the encoding of the images.')
-        
+
     args = parser.parse_args()
-    
+
     if args.list:
         make_list(args.prefix, args.root, args.recursive,
                   args.exts, args.chunks, args.train_ratio)
@@ -214,4 +214,5 @@ def main():
         write_record(args, image_list)
 
 if __name__ == '__main__':
+    sys.stdout = os.fdopen(sys.stdout.fileno(), 'a+', 1)
     main()
