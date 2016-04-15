@@ -22,7 +22,7 @@
 
 export CC = gcc
 export CXX = g++
-export NVCC = nvcc
+export NVCC = nvcc arch=sm_50
 
 # whether compile with debug
 DEBUG = 0
