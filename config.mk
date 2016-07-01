@@ -43,14 +43,13 @@ USE_CUDA = 1
 # add the path to CUDA libary to link and compile flag
 # if you have already add them to enviroment variable, leave it as NONE
 # USE_CUDA_PATH = /usr/local/cuda
-USE_CUDA_PATH = /usr/local/cuda/
+USE_CUDA_PATH = /usr/local/cuda-7.0
 
 # whether use CUDNN R3 library
 USE_CUDNN = 1
 
-USE_CUDNN_PATH = /usr/lib64/cudnn-v3/
-
-#USE_CUDNN_PATH = /usr/lib64/cudnn-v3/
+USE_CUDNN_PATH = /usr/local/cudnn-v3/
+ 
 # whether use opencv during compilation
 # you can disable it, however, you will not able to use
 # imbin iterator
