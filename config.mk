@@ -28,10 +28,10 @@ export NVCC = nvcc arch=sm_50
 DEBUG = 0
 
 # the additional link flags you want to add
-ADD_LDFLAGS = -L/usr/local/cudnn-v3/lib64
+ADD_LDFLAGS = -L/usr/local/cudnn-v3/lib64 -Wl,-R'/usr/local/cuda-7.0/lib64',-R'/usr/local/cudnn-v3/lib64',-R'/usr/local/opencv-2.4.13/lib'
 
 # the additional compile flags you want to add
-ADD_CFLAGS = -I/usr/local/cudnn-v3/include -I/usr/include/openblas
+ADD_CFLAGS = -I/usr/local/cuda-7.0/include -I/usr/local/cudnn-v3/include -I/usr/include/openblas
 
 #---------------------------------------------
 # matrix computation libraries for CPU/GPU
