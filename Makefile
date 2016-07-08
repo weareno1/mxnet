@@ -48,13 +48,9 @@ endif
 
 # setup opencv
 ifeq ($(USE_OPENCV), 1)
-	#CFLAGS += -DMXNET_USE_OPENCV=1 `pkg-config --cflags opencv-2.4.13`
-	#LDFLAGS += `pkg-config --libs opencv-2.4.13` -L/usr/lib64/cudnn-v3 -L/usr/local/opencv-2.4.13/lib -Wl,-rpath=/usr/local/opencv-2.4.13/lib,-rpath=/usr/lib64/cudnn-v3
-	CFLAGS += -DMXNET_USE_OPENCV=1 `pkg-config --cflags opencv`
-	LDFLAGS += `pkg-config --libs opencv` -L/usr/lib64/cudnn-v3 -Wl,-rpath=/usr/lib64/cudnn-v3
+	CFLAGS += -DMXNET_USE_OPENCV=1 `pkg-config --cflags opencv-2.4.13`
+	LDFLAGS += `pkg-config --libs opencv-2.4.13`
 	BIN += bin/im2rec
-	#CFLAGS += -DMXNET_USE_OPENCV=1 `pkg-config --cflags opencv-3.1.0`
-	#LDFLAGS += `pkg-config --libs opencv-3.1.0` -Wl,-rpath=/usr/local/opencv-3.1.0/lib
 else
 	CFLAGS+= -DMXNET_USE_OPENCV=0
 endif
