@@ -321,8 +321,10 @@ class CustomMetric(EvalMetric):
             label = label.asnumpy()
             pred = pred.asnumpy()
 
+            """
             if pred.shape[1] == 2:
                 pred = pred[:, 1]
+            """
 
             self.sum_metric += self._feval(label, pred)
             self.num_inst += 1
