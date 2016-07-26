@@ -95,6 +95,8 @@ def write_record(args, image_list):
                 newsize = (img.shape[0]*args.resize/img.shape[1], args.resize)
             else:
                 newsize = (args.resize, img.shape[1]*args.resize/img.shape[0])
+            #resize will swap width and height
+            newsize = (newsize[1], newsize[0])
             img = cv2.resize(img, newsize)
         header = mx.recordio.IRHeader(0, item[2], item[0], 0)
 
