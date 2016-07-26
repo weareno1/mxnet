@@ -1,2 +1,8 @@
-git clone --recursive https://github.com/weareno1/mxnet
+git clone --recursive git://github.com/weareno1/mxnet
+
+#USE -I -R''替代 LD_LIBRARY_PATH
+### UBUNTU ####
+sudo apt-get install libopenblas-dev
+sudo apt-get install python-opencv
+
 make DEBUG=1 VERBOSE=1

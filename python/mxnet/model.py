@@ -210,6 +210,7 @@ def _train_multi_device(symbol, ctx, arg_names, param_names, aux_names,
     # Now start training
     train_data.reset()
     for epoch in range(begin_epoch, end_epoch):
+        stage = 0
         # Training phase
         tic = time.time()
         eval_metric.reset()
@@ -289,8 +290,16 @@ def _train_multi_device(symbol, ctx, arg_names, param_names, aux_names,
         # evaluation
         if eval_data:
             eval_metric.reset()
-            eval_data.reset()
+            #eval_data.reset()
+            eval_do_reset = True
+            num = 0
             for i, eval_batch in enumerate(eval_data):
+
+                if epoch_size is not None and i >= epoch_size:
+                    eval_do_reset = False
+                    break
+                num += 1
+
                 executor_manager.load_data_batch(eval_batch)
                 executor_manager.forward(is_train=False)
                 executor_manager.update_metric(eval_metric, eval_batch.label)
@@ -304,9 +313,24 @@ def _train_multi_device(symbol, ctx, arg_names, param_names, aux_names,
                             call(batch_end_params)
                     else:
                         eval_batch_end_callback(batch_end_params)
-            name_value = eval_metric.get_name_value()
-            for name, value in name_value:
-                logger.info('Epoch[%d] Validation-%s=%f', epoch, name, value)
+            if eval_do_reset == True:
+                logger.info('Epoch[%d] Resetting Validate Data Iterator', epoch)
+                eval_data.reset()
+
+            select_percentage = float(num) / epoch_size
+            logger.info('Epoch[%d] Select %d(%f) batches', epoch, num, select_percentage)
+            if select_percentage > 0.6:
+                name_value = eval_metric.get_name_value()
+                for name, value in name_value:
+                    logger.info('Epoch[%d] Validation-%s=%f', epoch, name, value)
+                stage = 1
+                batch_end_params = BatchEndParam(epoch=epoch, nbatch=0, eval_metric=eval_metric, locals=locals())
+                if isinstance(batch_end_callback, list):
+                    for call in batch_end_callback:
+                        call(batch_end_params)
+                else:
+                    batch_end_callback(batch_end_params)
+
     # end of all epochs
     return
 
