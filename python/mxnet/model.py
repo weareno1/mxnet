@@ -207,6 +207,8 @@ def _train_multi_device(symbol, ctx, arg_names, param_names, aux_names,
     if update_on_kvstore:
         kvstore.set_optimizer(optimizer)
 
+    num_eval_batches_done = False
+    num_eval_batches = 0
     # Now start training
     train_data.reset()
     for epoch in range(begin_epoch, end_epoch):
@@ -295,10 +297,13 @@ def _train_multi_device(symbol, ctx, arg_names, param_names, aux_names,
             num = 0
             for i, eval_batch in enumerate(eval_data):
 
-                if epoch_size is not None and i >= epoch_size:
+                if epoch_size is not None and i >= epoch_size \
+                        and (num_eval_batches_done and num_eval_batches / epoch_size > 4):
                     eval_do_reset = False
                     break
                 num += 1
+                if not num_eval_batches_done:
+                    num_eval_batches += 1
 
                 executor_manager.load_data_batch(eval_batch)
                 executor_manager.forward(is_train=False)
@@ -314,12 +319,14 @@ def _train_multi_device(symbol, ctx, arg_names, param_names, aux_names,
                     else:
                         eval_batch_end_callback(batch_end_params)
             if eval_do_reset == True:
+                num_eval_batches_done = True
                 logger.info('Epoch[%d] Resetting Validate Data Iterator', epoch)
                 eval_data.reset()
 
-            select_percentage = float(num) / epoch_size
-            logger.info('Epoch[%d] Select %d(%f) batches', epoch, num, select_percentage)
-            if select_percentage > 0.6:
+            select_epoch_ptg = float(num) / epoch_size
+            select_valid_ptg = float(num) / num_eval_batches
+            logger.info('Epoch[%d] Select %d(%f/%d %f/%d) batches', epoch, num, select_epoch_ptg, epoch_size, select_valid_ptg, num_eval_batches)
+            if select_epoch_ptg > 0.6 or select_valid_ptg > 0.5:
                 name_value = eval_metric.get_name_value()
                 for name, value in name_value:
                     logger.info('Epoch[%d] Validation-%s=%f', epoch, name, value)
