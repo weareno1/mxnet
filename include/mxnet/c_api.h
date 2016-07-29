@@ -93,6 +93,9 @@ struct NDArrayOpInfo {
   void* p_declare_backward_dependency;
 };
 }
+
+MXNET_DLL int MXConfig(int opt, int value);
+
 /*!
  * \brief return str message of the last error
  *  all function in this file will return 0 when success

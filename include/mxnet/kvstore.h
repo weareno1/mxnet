@@ -20,6 +20,7 @@ namespace mxnet {
  */
 class KVStore {
  public:
+  static int init_gpu;
   /*! \brief virtual destructor */
   virtual ~KVStore() {}
 

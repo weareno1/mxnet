@@ -22,7 +22,7 @@ class KVStoreLocal : public KVStore {
  public:
   KVStoreLocal() {
     pinned_ctx_ = (MXNET_USE_CUDA != 0) ?
-        Context::CPUPinned(0) : Context::CPU();
+        Context::CPUPinned(init_gpu) : Context::CPU();
     // the server perameters
     nthread_reduction_ = dmlc::GetEnv("MXNET_KVSTORE_REDUCTION_NTHREADS", 4);
     bigarray_bound_ = dmlc::GetEnv("MXNET_KVSTORE_BIGARRAY_BOUND", 1000 * 1000);

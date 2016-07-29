@@ -99,6 +99,14 @@ inline int MXAPIGetFunctionRegInfo(const FunRegType *e,
   API_END();
 }
 
+int MXConfig(int opt, int value) {
+    API_BEGIN();
+    if(0 == opt) {
+        KVStore::init_gpu = value;
+    }
+    API_END();
+}
+
 // NOTE: return value is added in API_END
 int MXRandomSeed(int seed) {
   API_BEGIN();

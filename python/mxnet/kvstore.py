@@ -357,7 +357,7 @@ class KVStore(object):
         check_call(_LIB.MXKVStoreSendCommmandToServers(
             self.handle, mx_uint(head), c_str(body)))
 
-def create(name='local'):
+def create(name='local', init_gpu=0):
     """Create a new KVStore.
 
     Parameters
@@ -374,6 +374,7 @@ def create(name='local'):
     if not isinstance(name, string_types):
         raise TypeError('name need to be string')
     handle = KVStoreHandle()
+    check_call(_LIB.MXConfig(0, init_gpu))
     check_call(_LIB.MXKVStoreCreate(c_str(name),
                                     ctypes.byref(handle)))
     return KVStore(handle)
