@@ -28,10 +28,10 @@ export NVCC = nvcc arch=sm_50
 DEBUG = 0
 
 # the additional link flags you want to add
-ADD_LDFLAGS = -L/usr/local/cudnn-v3/lib64 -Wl,-R'/usr/local/cuda-7.0/lib64',-R'/usr/local/cudnn-v3/lib64',-R'/usr/local/opencv-2.4.13/lib'
+ADD_LDFLAGS = -L/usr/local/cudnn-v5/lib64 -Wl,-R'/usr/local/cuda/lib64',-R'/usr/local/cudnn-v5/lib64',-R'/usr/local/opencv-2.4.13/lib'
 
 # the additional compile flags you want to add
-ADD_CFLAGS = -I/usr/local/cuda-7.0/include -I/usr/local/cudnn-v3/include -I/usr/include/openblas
+ADD_CFLAGS = -I/usr/local/cuda/include -I/usr/local/cudnn-v5/include -I/usr/include/openblas
 
 #---------------------------------------------
 # matrix computation libraries for CPU/GPU
@@ -43,12 +43,12 @@ USE_CUDA = 1
 # add the path to CUDA libary to link and compile flag
 # if you have already add them to enviroment variable, leave it as NONE
 # USE_CUDA_PATH = /usr/local/cuda
-USE_CUDA_PATH = /usr/local/cuda-7.0
+USE_CUDA_PATH = /usr/local/cuda
 
 # whether use CUDNN R3 library
 USE_CUDNN = 1
 
-USE_CUDNN_PATH = /usr/local/cudnn-v3/
+USE_CUDNN_PATH = /usr/local/cudnn-v5/
  
 # whether use opencv during compilation
 # you can disable it, however, you will not able to use

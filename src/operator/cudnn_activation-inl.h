@@ -34,11 +34,21 @@ class CuDNNActivationOp : public Operator {
         LOG(FATAL) << "Not implmented";
         break;
     }
+    #if CUDNN_MAJOR == 5
+    nan_prop_ = CUDNN_NOT_PROPAGATE_NAN;
+    CHECK_EQ(cudnnCreateActivationDescriptor(&desc_),
+             CUDNN_STATUS_SUCCESS);
+    CHECK_EQ(cudnnSetActivationDescriptor(desc_, mode_, nan_prop_, relu_ceil_),
+             CUDNN_STATUS_SUCCESS);
+    #endif
   }
 
   ~CuDNNActivationOp() {
     if (init_cudnn_) {
       CHECK_EQ(cudnnDestroyTensorDescriptor(shape_desc_), CUDNN_STATUS_SUCCESS);
+      #if CUDNN_MAJOR == 5
+      CHECK_EQ(cudnnDestroyActivationDescriptor(desc_), CUDNN_STATUS_SUCCESS);
+      #endif
     }
   }
 
@@ -88,14 +98,25 @@ class CuDNNActivationOp : public Operator {
                                           data.shape_[2],
                                           data.shape_[3]), CUDNN_STATUS_SUCCESS);
     }
+    #if CUDNN_MAJOR <= 4
     CHECK_EQ(cudnnActivationForward(s->dnn_handle_,
-                                    mode_,
+                                     mode_,
                                     &alpha,
                                     shape_desc_,
                                     data.dptr_,
                                     &beta,
                                     shape_desc_,
                                     out.dptr_), CUDNN_STATUS_SUCCESS);
+    #elif CUDNN_MAJOR == 5
+    CHECK_EQ(cudnnActivationForward(s->dnn_handle_,
+                                     desc_,
+                                    &alpha,
+                                    shape_desc_,
+                                    data.dptr_,
+                                    &beta,
+                                    shape_desc_,
+                                    out.dptr_), CUDNN_STATUS_SUCCESS);
+    #endif
   }
 
   virtual void Backward(const OpContext &ctx,
@@ -144,6 +165,7 @@ class CuDNNActivationOp : public Operator {
       input_grad = in_grad[activation::kData].get_with_shape<gpu, 4, DType>(dshape, s);
     }
     CHECK_EQ(s->dnn_handle_ownership_, mshadow::Stream<gpu>::OwnHandle);
+    #if CUDNN_MAJOR <= 4
     CHECK_EQ(cudnnActivationBackward(s->dnn_handle_,
                                      mode_,
                                      &alpha,
@@ -156,6 +178,20 @@ class CuDNNActivationOp : public Operator {
                                      &beta,
                                      shape_desc_,
                                      input_grad.dptr_), CUDNN_STATUS_SUCCESS);
+    #elif CUDNN_MAJOR == 5
+    CHECK_EQ(cudnnActivationBackward(s->dnn_handle_,
+                                     desc_,
+                                     &alpha,
+                                     shape_desc_,
+                                     output_data.dptr_,
+                                     shape_desc_,
+                                     grad.dptr_,
+                                     shape_desc_,
+                                     data.dptr_,
+                                     &beta,
+                                     shape_desc_,
+                                     input_grad.dptr_), CUDNN_STATUS_SUCCESS);
+    #endif
   }
 
  private:
@@ -164,6 +200,11 @@ class CuDNNActivationOp : public Operator {
   cudnnActivationMode_t mode_;
   cudnnTensorDescriptor_t shape_desc_;
   ActivationParam param_;
+#if CUDNN_MAJOR == 5
+  cudnnActivationDescriptor_t desc_;
+  cudnnNanPropagation_t nan_prop_;
+  double relu_ceil_;
+#endif
 };  // class CuDNNActivationOp
 }  // namespace op
 }  // namespace mxnet

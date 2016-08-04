@@ -194,11 +194,11 @@ struct threshold {
 struct abs {
   template<typename DType>
   MSHADOW_XINLINE static DType Map(DType a) {
-    return DType(fabsf(a));
+    return DType(fabsf(float(a)));  // NOLINT(*)
   }
 };
 
-/*! \brief used for generate element of power */
+/*! \brief used for generate element of sign */
 struct sign {
   template<typename DType>
   MSHADOW_XINLINE static DType Map(DType a) {
