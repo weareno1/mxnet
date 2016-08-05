@@ -297,8 +297,8 @@ def _train_multi_device(symbol, ctx, arg_names, param_names, aux_names,
             num = 0
             for i, eval_batch in enumerate(eval_data):
 
-                if (epoch_size is not None and i >= epoch_size) \
-                        or (num_eval_batches_done and num_eval_batches / epoch_size > 4):
+                if (not num_eval_batches_done and epoch_size is not None and i >= epoch_size) \
+                        or (num_eval_batches_done and num_eval_batches / epoch_size > 4 and i >= epoch_size):
                     eval_do_reset = False
                     break
                 num += 1
