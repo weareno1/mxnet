@@ -99,7 +99,8 @@ class CuDNNBatchNormOp : public Operator {
       .get_with_shape<gpu, 1, real_t>(Shape1(shape_[1]), s);
     float a = 1.0f, b = 0.0f;
 
-    if (ctx.is_train && param_.fix_gamma) gamma = 1.f;
+    //if (ctx.is_train && param_.fix_gamma) gamma = 1.f;
+    if (param_.fix_gamma) gamma = 1.f;
 
     if (ctx.is_train) {
       Tensor<gpu, 1> save_mean =
