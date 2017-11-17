@@ -80,7 +80,7 @@ def write_record(args, image_list):
         except:
             print 'imread error:', item[1]
             return
-        if img == None:
+        if img is None or img.data is None:
             print 'read none error:', item[1]
             return
         if args.center_crop:
